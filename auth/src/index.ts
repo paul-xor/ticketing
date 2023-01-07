@@ -33,6 +33,9 @@ app.all('*', async() => {
 app.use(errorHandler)
 
 const start = async() => {
+  if(!process.env.JWT_KEY) {
+    throw new Error('JWT must be defined')
+  }
   try {
     // auth database should be created automatically
     await mongoose.connect('mongodb://auth-mongo-srv:27017/auth')
