@@ -33,7 +33,10 @@ router.post(
     await user.save();
 
     //Generate jwt
-    console.log('🔑 JWT_KEY: ', process.env.KEY_JWT);
+    if (!process.env.JWT_KEY) {
+      console.log('🔑 JWT_KEY: ', process.env.KEY_JWT);
+      throw new Error('🕷 JWT_KEY not defined!!')
+    }
 
     const userJwt = jwt.sign({
       id: user.id,
