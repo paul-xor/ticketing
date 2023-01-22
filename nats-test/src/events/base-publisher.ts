@@ -6,7 +6,7 @@ interface Event {
   data: any;
 }
 
-export abstract class Publisher <T extends Event> {
+export abstract class Publisher<T extends Event> {
   abstract subject: T['subject'];
   private client: Stan;
 
@@ -19,5 +19,4 @@ export abstract class Publisher <T extends Event> {
       console.log('Event published.');
     });
   }
-
 }
