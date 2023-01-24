@@ -12,6 +12,8 @@ import { Order } from '../models/order';
 
 const router = express.Router();
 
+const EXPIRATION_WINDOW_SECONDS = 15 * 60;
+
 router.post('/api/orders', requireAuth, [
   body('ticketId')
     .not()
@@ -36,12 +38,21 @@ router.post('/api/orders', requireAuth, [
     throw new  BadRequestError('Ticket is already reserved.');
   }
   // Caoculate an expiration date for this order
-
+  const expiration = new Date();
+  expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS);
   // build the order and save to db.
+  const order = Order.build({
+    userId: req.currentUser!.id,
+    status: OrderStatus.Created,
+    expiresAt: expiration,
+    ticket,
+  });
+
+  await order.save();
 
   // Publish an event saying that an order was created.
 
-  res.send({});
+  res.status(201).send(order);
 });
 
 export { router as newOrderRouter };
