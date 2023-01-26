@@ -3,6 +3,7 @@ import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 import { Order } from '../../models/order';
 import { OrderStatus } from '@small-tickets/common';
+import { natsWrapper } from '../../nats-wrapper';
 
 it('mark an order as cancelled', async() => {
   // create a ticket with Ticket Model
@@ -34,4 +35,27 @@ it('mark an order as cancelled', async() => {
 
 })
 
-it.todo ('emits a order cancelled event')
+it('emits a order cancelled event', async() => {
+  const ticket = Ticket.build({
+    title: 'concert',
+    price: 20
+  });
+  await ticket.save();
+
+  const user = global.signin();
+  // make a request to create an order
+  const{ body: order} = await request(app)
+    .post('/api/orders')
+    .set('Cookie', user)
+    .send({ ticketId: ticket.id })
+    .expect(201);
+
+  // make a request to cancel the order
+  await request(app)
+    .delete(`/api/orders/${order.id}`)
+    .set('Cookie', user)
+    .send()
+    .expect(204);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+})
