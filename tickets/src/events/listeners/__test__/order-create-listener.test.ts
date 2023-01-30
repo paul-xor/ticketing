@@ -36,4 +36,19 @@ const setup = async() => {
   return { listener, ticket, data, msg };
 }
 
-it('', () => {});
+it('sets the userId of the ticket', async() => {
+  const { listener, ticket, msg, data } = await setup();
+
+  await listener.onMessage(data, msg);
+
+  const updateTicket = await Ticket.findById(ticket.id);
+
+  expect(updateTicket!.orderId).toEqual(data.id);
+});
+it('acks the message', async() => {
+  const { listener, msg, data } = await setup();
+
+  await listener.onMessage(data, msg);
+
+  expect(msg.ack).toHaveBeenCalled();
+});
