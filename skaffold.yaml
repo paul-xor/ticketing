@@ -40,4 +40,12 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: pasmoa/expiration
+      context: expiration
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
 
