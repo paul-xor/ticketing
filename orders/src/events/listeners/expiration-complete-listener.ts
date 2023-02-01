@@ -4,7 +4,7 @@ import { queueGroupName } from './queue-group-name';
 import { Order } from '../../models/order';
 import { OrderCancelledPublisher } from '../publishers/order-cancelled-publisher';
 
-export class ExprirationCompleteListener extends Listener<ExpirationCompleteEvent> {
+export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent> {
   subject: Subjects.ExpirationComplete = Subjects.ExpirationComplete;
   queueGroupName = queueGroupName;
 
