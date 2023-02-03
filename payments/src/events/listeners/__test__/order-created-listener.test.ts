@@ -3,7 +3,7 @@ import { Message } from 'node-nats-streaming';
 import { OrderCreatedEvent, OrderStatus } from '@small-tickets/common';
 import { natsWrapper } from '../../../nats-wrapper';
 import { OrderCreatedListener } from '../order-created-listener';
-import { Order } from '../../../models/orders';
+import { Order } from '../../../models/order';
 
 const setup = async () => {
   const listener = new OrderCreatedListener(natsWrapper.client);
