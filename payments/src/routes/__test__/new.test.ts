@@ -3,8 +3,9 @@ import mongoose from "mongoose";
 import { app } from "../../app";
 import { Order } from "../../models/order";
 import { OrderStatus } from "@small-tickets/common";
+import { stripe } from "../../stripe";
 
-jest.mock('../../__mocks__/stripe.ts');
+jest.mock('../../stripe');
 
 it('returns a 404 when purchasing the order that does not exists', async() => {
   await request(app)
@@ -61,14 +62,13 @@ it('returns a 400 when purchasing a cancelled order', async() => {
 
 it('returns a 204 with valid inputs', async() => {
   const userId = new mongoose.Types.ObjectId().toHexString();
-
   const order = Order.build({
     id: new mongoose.Types.ObjectId().toHexString(),
     userId,
     version: 0,
     price: 20,
-    status: OrderStatus.Cancelled,
-  })
+    status: OrderStatus.Created,
+  });
   await order.save();
 
   await request(app)
@@ -78,4 +78,10 @@ it('returns a 204 with valid inputs', async() => {
       token: 'tok_visa',
       orderId: order.id,
     })
+    .expect(201);
+
+  const chargeOptions = (stripe.charges.create as jest.Mock).mock.calls[0][0];
+  expect(chargeOptions.source).toEqual('tok_visa');
+  expect(chargeOptions.amount).toEqual(20 * 100);
+  expect(chargeOptions.currency).toEqual('usd');
 })
