@@ -40,7 +40,7 @@ import {
   }
 
   await stripe.charges.create({
-    currency: 'cad',
+    currency: 'usd',
     amount: order.price * 100,
     source: token,
   })
