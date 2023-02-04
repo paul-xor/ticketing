@@ -3,12 +3,17 @@ import mongoose from 'mongoose';
 import { app } from '../app';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 declare global {
   var signin: (id?: string) => string[];
 }
 
 jest.mock('../nats-wrapper.ts');
+
+console.log('## stripe_key: ', process.env.STRIPE_KEY);
 
 let mongo: any;
 
