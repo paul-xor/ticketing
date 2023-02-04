@@ -43,7 +43,8 @@ import {
     currency: 'usd',
     amount: order.price * 100,
     source: token,
-  })
+  });
+
 
   res.status(201).send({ success: true });
  });
